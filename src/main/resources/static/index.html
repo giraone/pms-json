@@ -34,10 +34,12 @@ function downloadJsonSchema(url) {
 <ul>
     <li><a href="api/profile/companies">application-Level Profile Semantics (ALPS) for companies</a></li>
     <li><a href="#" onclick="downloadJsonSchema('http://localhost:8080/api/profile/companies')">JSON schema companies</a></li>
-    <li><a href="api/companies">All companies</a></li>
-    <li><a href="api/companies?sort=name,asc&page=1&size=10">All companies with sorting (by name), paging (second page with size 10)</a></li>
+    <li><a href="api/companies">All companies (first page)</a></li>
+    <li><a href="api/companies?sort=id,asc&page=0&size=20">All companies with sorting (by id), paging (first page with size 20)</a></li>
+    <li><a href="api/companies?sort=name,asc&page=0&size=20">All companies with sorting (by name), paging (first page with size 20)</a></li>
     <li><a href="api/companies/3b966514-2c6e-4199-9989-3963012df83c">A single company by its internal id (3b966514-2c6e-4199-9989-3963012df83c)</a></li>
     <li><a href="api/companies/search/findOneByExternalId?externalId=s-00006204">Find one by external ID (s-00006204)</a></li>
+    <li><a href="api/companies/search/findAllByPostalCode?postalCode=91234">Find all (JSON query) by postal code (91234)</a></li>
 </ul>
 
 <h2>Employees</h2>
@@ -45,8 +47,15 @@ function downloadJsonSchema(url) {
 <ul>
     <li><a href="api/profile/employees">application-Level Profile Semantics (ALPS) for employees</a></li>
     <li><a href="#" onclick="downloadJsonSchema('http://localhost:8080/api/profile/employees')">JSON schema employees</a></li>
-    <li><a href="api/employees">employees</a></li>
+    <li><a href="api/employees">All employees (first page)</a></li>
+    <li><a href="api/employees?sort=surname,asc&page=0&size=100">All employees with sorting (by surname), paging (first page with size 100)</a></li>
+    <li><a href="api/employees?sort=dateOfBirth,asc&page=0&size=100">All employees with sorting (by dateOfBirth), paging (first page with size 100)</a></li>
+    <li><a href="api/employees/f977c2ff-eb95-40e7-8264-f73d9bae9934">A single employee by his/her internal id (f977c2ff-eb95-40e7-8264-f73d9bae9934)</a></li>
+    <li><a href="api/employees/f977c2ff-eb95-40e7-8264-f73d9bae9934/company">A company of an employee by his/her internal id (f977c2ff-eb95-40e7-8264-f73d9bae9934)</a></li>
+    <li><a href="api/employees/search/findAllByCompanyExternalIdAndSurname?companyExternalId=m-00000776&surname=Fischer">Find all by company (m-00000776) and surname (Fischer)</a></li>
+    <li><a href="api/employees/search/findAllByNumberOfChildren?numberOfChildren=2">Find all (JSON query) by numberOfChildren (2)</a></li>
 </ul>
+
 
 <pre id="output"></pre>
 

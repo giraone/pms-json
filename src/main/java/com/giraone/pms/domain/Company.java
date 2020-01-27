@@ -40,7 +40,6 @@ public class Company implements Serializable {
     @Column(name = "tax_rel_state_code")
     private String taxRelevantStateCode;
 
-
     @Column(name = "company_address")
     @Convert(converter = HashMapConverter.class)
     private HashMap<String, Object> companyAddress;

@@ -1,9 +1,5 @@
 # Testing PostgreSQL JSONB/JSON, Spring Data Rest and QueryDSL
 
-**TODO**
-- QueryDSL
-- UI
-
 **Features/scope of this project**
 
 - Java 9 source level (needed for using `Map.of()`)
@@ -19,13 +15,13 @@
 ## Build and Run
 
 Build:
-```
+```shell script
 export JAVA_HOME=<path-to-jdk9-or-higher>
 mvn package
 ```
 
 Run:
-```
+```shell script
 docker-compose up -d
 java -jar target/pms-json.jar
 ```
@@ -126,10 +122,44 @@ public class Company implements Serializable {
 }
 ```
 
-## QUERY DSL
+## JPA / Spring Data / Spring Data Rest
 
-https://www.baeldung.com/rest-api-search-language-spring-data-querydsl
+### Using Spring Data Rest
 
+```java
+@RepositoryRestResource(collectionResourceRel = "employees", path = "employees")
+public interface EmployeeRepository extends PagingAndSortingRepository<Employee, UUID> {
+    @RestResource(path = "findAllByCompanyExternalIdAndSurname", rel = "findAllByCompanyExternalIdAndSurname")
+    @Query("SELECT DISTINCT e FROM Employee e" +
+        " WHERE e.company.externalId = :companyExternalId" +
+        " AND e.surname LIKE :surname")
+    Page<Employee> findAllByCompanyExternalIdAndSurname(
+        @Param("companyExternalId") String companyExternalId,
+        @Param("surname") String surname,
+        Pageable pageable);
+}
+ ```
+
+### Using JSONB
+       
+Native queries in Spring Data repositories:
+
+```java
+@RepositoryRestResource(collectionResourceRel = "companies", path = "companies")
+public interface CompanyRepository extends PagingAndSortingRepository<Company, UUID> {
+   @RestResource(path = "findAllByPostalCode", rel = "findAllByPostalCode")
+   @Query(value = "SELECT * FROM Company c WHERE c.company_address->>'postalCode' = :postalCode", nativeQuery = true)
+   Page<Company> findAllByPostalCode(@Param("postalCode") String postalCode, Pageable pageable);
+}
+
+@RepositoryRestResource(collectionResourceRel = "employees", path = "employees")
+public interface EmployeeRepository extends PagingAndSortingRepository<Employee, UUID> {
+    @RestResource(path = "findAllByNumberOfChildren", rel = "findAllByNumberOfChildren")
+    @Query(value = "SELECT * FROM Employee e WHERE e.tax_relevant_data @> '{\"numberOfChildren\": ?1}'", nativeQuery = true)
+    Page<Employee> findAllByNumberOfChildren(int numberOfChildren, Pageable pageable);
+}
+```
+ 
 ## Tests with SQL based schema creation and SQL test data:
 
 ```java
@@ -171,3 +201,11 @@ public class Company {
     ...
 }
 ```
+
+## QUERY DSL
+
+https://www.baeldung.com/rest-api-search-language-spring-data-querydsl
+
+### TODOs
+
+- No UI yet
