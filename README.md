@@ -9,11 +9,11 @@
 - Java 9 source level (needed for using `Map.of()`)
 - JUnit 5 with AssertJ
 - Spring Data Rest
-  . basic usage
+  - basic usage
   - paging and sorting enabled
-  - HAL explorer (?)
+  - HAL explorer
 - Flexible storage of additional attributes (`Map<Object, String>`  Serialization/Deserialization to JSON/JSONB)
-- Docker compose setup with PostgreSQL and PgAdmin4 is available
+- Docker compose setup with PostgreSQL and PgAdmin4 available
 - OWASP maven dependency check configured in `pom.xml`. Call using `mvn -DskipTests=true verify`. Result in `dependency-check-report.html`.
 
 ## Build and Run
@@ -44,11 +44,11 @@ public interface CompanyRepository extends PagingAndSortingRepository<Company, U
 }
 ```
 
-Configuration in `application.yml e.g.
+Configuration in `application.yml` e.g.
 - page size set to 20
 - URL base path  ["localhost:8080/**api**/companies"](http://localhost:8080/api/companies")
 
-```
+```yaml
 spring:
   data:
     rest:
@@ -57,7 +57,7 @@ spring:
 ```
 
 ## HAL explorer
-```
+```xml
 <dependency>
     <groupId>org.springframework.data</groupId>
     <artifactId>spring-data-rest-hal-explorer</artifactId>
@@ -132,7 +132,7 @@ https://www.baeldung.com/rest-api-search-language-spring-data-querydsl
 
 ## Tests with SQL based schema creation and SQL test data:
 
-```
+```java
 @Sql(value = {"/schema-h2-create.sql" "/import.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(value = {"/schema-h2-drop.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 @SpringBootTest
@@ -142,7 +142,7 @@ class SpringDataRestResourcesIntTest {
 
 ### Fetch type LAZY
 
-```
+```java
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 ...
 @TypeDefs({
@@ -162,7 +162,7 @@ For using the fetch type LAZY, `hibernate-enhance-maven-plugin` is also needed.
 
 ### Entities with PostgreSQL UUID
 
-```
+```java
 @Entity
 public class Company {
     @Id
