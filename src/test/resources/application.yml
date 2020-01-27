@@ -1,0 +1,45 @@
+
+logging:
+  level:
+    ROOT: INFO
+    com.giraone.pms: DEBUG
+    # org.hibernate: INFO
+    # org.hibernate.type: DEBUG
+    # org.springframework.orm.jpa: INFO
+    # org.springframework.transaction: INFO
+
+spring:
+  profiles:
+    active: test
+  cache:
+    type: none
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:h2:mem:tonoTracker;DB_CLOSE_DELAY=-1
+    name:
+    username:
+    password:
+    hikari:
+      auto-commit: false
+  jpa:
+    database: H2
+    generate-ddl: false
+    show-sql: true
+    # The default "true" (using OSIV) is an ANTI pattern!
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+  data:
+    rest:
+      base-path: api
+      default-page-size: 100
+
+server:
+  port: 10344
+  address: localhost
+
+application:
+  fillDatabaseWithSamplesOnStart: false

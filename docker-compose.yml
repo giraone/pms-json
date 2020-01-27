@@ -1,0 +1,34 @@
+version: "3.5"
+
+services:
+  postgres:
+    image: debezium/postgres
+    hostname: postgres-pmssql
+    container_name: postgres-pmssql
+    volumes:
+      - ./data/postgresql:/var/lib/postgresql/data
+    networks:
+      - pmssql
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=pmssql
+      - POSTGRES_USER=pmssql
+      - POSTGRES_PASSWORD=pmssql-secret
+
+  pgadmin4:
+    image: dpage/pgadmin4:latest
+    hostname: pgadmin4
+    container_name: pgadmin4
+    volumes:
+      - ./data/pgadmin4:/var/lib/pgadmin
+    networks:
+      - pmssql
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - 8888:80
+
+networks:
+  pmssql:
