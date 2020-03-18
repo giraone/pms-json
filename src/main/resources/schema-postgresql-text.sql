@@ -1,3 +1,6 @@
+DROP TABLE employee;
+DROP TABLE company;
+
 CREATE TABLE company (
     id uuid not null,
     version timestamp not null,

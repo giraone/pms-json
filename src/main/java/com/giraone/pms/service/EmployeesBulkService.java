@@ -13,11 +13,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Service
 public class EmployeesBulkService {
+
+    private final static AtomicLong EMPLOYEE_COUNT = new AtomicLong(0L);
+    private final static AtomicLong DURATION = new AtomicLong(0L);
 
     private final Random random = new Random();
 
@@ -71,8 +81,11 @@ public class EmployeesBulkService {
             .collect(Collectors.toList());
 
         this.employeeRepository.saveAll(employees);
-        final long end = System.currentTimeMillis();
-        log.info("Added {} employees in {} msec", size, end - start);
+        final long duration = System.currentTimeMillis() - start;
+        final long totalCount = EMPLOYEE_COUNT.addAndGet(size);
+        final long totalDuration = DURATION.addAndGet(duration);
+        log.info("Added {} employees in {} msec, total {} in {} msec, RPS = {}",
+            size, duration, totalCount, totalDuration, 1000L * totalCount / totalDuration);
         return size;
     }
 
@@ -93,6 +106,10 @@ public class EmployeesBulkService {
         employee.setGender(GenderType.fromString(dto.getGender()));
         employee.setSurname(dto.getSurname());
         employee.setGivenName(dto.getGivenName());
+
+        employeeAddress.put("postalCode", dto.getPostalCode());
+        employeeAddress.put("city", dto.getCity());
+        employeeAddress.put("streetAddress", dto.getStreetAddress());
 
         boolean married = employee.getDateOfBirth() != null && random.nextBoolean();
         HashMap<String, Object> employeeTaxRelData = new HashMap<>(Map.of(

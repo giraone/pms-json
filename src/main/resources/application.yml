@@ -9,28 +9,38 @@ logging:
     # org.springframework.transaction: INFO
     # org.postgres.jdbc: INFO
 
-#management:
-#  endpoints:
-#    web:
-#      base-path: /management
-#      exposure:
-#        include: ['configprops', 'env', 'health', 'info', 'logfile', 'loggers', 'threaddump']
-#  endpoint:
-#    health:
-#      show-details: always
+management:
+  health:
+    ldap:
+      enabled: false
+  endpoints:
+    web:
+      exposure:
+        # we want all infos
+        include: '*'
+        # No env - passwords!
+        exclude: env
+    enabled-by-default: true
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true
 
 spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     platform: postgresql
-    name: pmssql
-    url: jdbc:postgresql://localhost:5432/
-    username: pmssql
-    password: pmssql-secret
+    name: pmsjsonb
+    url: jdbc:postgresql://localhost:5432/pmsjson
+    username: pmsjson
+    password: pmsjson-secret
   jpa:
     database: POSTGRESQL
     generate-ddl: false
-    show-sql: true
+    show-sql: false
     # The default "true" (using OSIV) is an ANTI pattern!
     open-in-view: false
     hibernate:
@@ -44,7 +54,7 @@ spring:
 #              action: create
 #              create-target: create.sql
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQL94Dialect
+        dialect: org.hibernate.dialect.PostgreSQL95Dialect
   data:
     rest:
       base-path: api

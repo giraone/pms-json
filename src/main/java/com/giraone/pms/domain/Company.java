@@ -1,11 +1,19 @@
 package com.giraone.pms.domain;
 
 import com.giraone.pms.repository.conversion.HashMapConverter;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -21,6 +29,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @ToString
+//@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 public class Company implements Serializable {
 
     @Id
@@ -42,5 +51,6 @@ public class Company implements Serializable {
 
     @Column(name = "company_address")
     @Convert(converter = HashMapConverter.class)
+    //@Type(type = "jsonb")
     private HashMap<String, Object> companyAddress;
 }

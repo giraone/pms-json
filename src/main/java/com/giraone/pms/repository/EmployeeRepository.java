@@ -12,7 +12,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @RepositoryRestResource(collectionResourceRel = "employees", path = "employees")
@@ -22,6 +21,13 @@ public interface EmployeeRepository extends PagingAndSortingRepository<Employee,
     @Timed
     @RestResource(path = "findAllByCompany", rel = "findAllByCompany")
     Page<Employee> findAllByCompany(Company company, Pageable pageable);
+
+    @Timed
+    @RestResource(path = "findAllByCompanyExternalId", rel = "findAllByCompanyExternalId")
+    @Query("SELECT DISTINCT e FROM Employee e WHERE e.company.externalId = :companyExternalId")
+    Page<Employee> findAllByCompanyExternalId(
+        @Param("companyExternalId") String companyExternalId,
+        Pageable pageable);
 
     @Timed
     @RestResource(path = "findAllByCompanyExternalIdAndSurname", rel = "findAllByCompanyExternalIdAndSurname")

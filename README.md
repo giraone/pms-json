@@ -64,9 +64,9 @@ spring:
 
 Here I want to show, how one can map arbitrary hierarchical properties (JSON tree with sub elements and arrays)
 to JSON/JSONB columns in PostgreSQL (and H2 for testing). The shown *Company* entity has a *companyAddress*
-object, which may differ in its content.
+object, which may differ in its content. 
 
-### Solution 1: Using `HashMap<String, Object>` and an `javax.persistence.AttributeConverter` 
+### Solution 1: Using `HashMap<String, Object>` as data type and an `javax.persistence.AttributeConverter` 
 
 ```java
 import com.giraone.pms.repository.conversion.HashMapConverter;
@@ -85,7 +85,7 @@ public class Company implements Serializable {
 }
 ```
 
-### Solution 2 using `om.vladmihalcea.hibernate.type.json.JsonStringType`
+### Solution 2: Using `HashMap<String, Object>` as data type and `com.vladmihalcea.hibernate.type.json.JsonStringType`
 ```java
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 
@@ -97,19 +97,20 @@ public class Company implements Serializable {
     private UUID id;
  
     ...
-
-    @Type(type = "json")
+ 
     @Column(name = "company_address")
+    @Type(type = "json")
     private HashMap<String, Object> companyAddress;
 }
 ```
 
-### Solution 3 using `com.vladmihalcea.hibernate.type.json.JsonBinaryType`
+### Solution 3: Using `HashMap<String, Object>` as data type and `com.vladmihalcea.hibernate.type.json.JsonBinaryType`
 
 ```java
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 ...
 @Entity
+@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 public class Company implements Serializable {
 
     @Id
@@ -121,6 +122,30 @@ public class Company implements Serializable {
     private HashMap<String, Object> companyAddress;
 }
 ```
+
+## Performance
+
+### Mit "text"
+
+````
+# 1 mio Employees bulk write
+Total 1000000 in 647 sec, RPS = 1544
+
+# JMeter api/companies:        AVG =   24 msec,  296.0 RPS
+# JMeter api/employees:        AVG = 1100 msec,    8.8 RPS
+# JMeter api/employees/search: AVG = 4500 msec,    2.2 RPS
+````
+
+### Mit "jsonb"
+
+````
+# 1 mio Employees bulk write
+Total 1000000 in 2.225 sec, RPS = 449
+
+# JMeter api/companies:        AVG =   26 msec,  282.0 RPS
+# JMeter api/employees:        AVG = 2100 msec,    4.7 RPS
+# JMeter api/employees/search: AVG = 4300 msec,    2.3 RPS
+````
 
 ## JPA / Spring Data / Spring Data Rest
 

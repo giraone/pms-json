@@ -3,11 +3,26 @@ package com.giraone.pms.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.giraone.pms.domain.enumeration.GenderType;
 import com.giraone.pms.repository.conversion.HashMapConverter;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.*;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -20,6 +35,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @ToString
+//@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 public class Employee implements Serializable {
 
     @Id
@@ -45,11 +61,12 @@ public class Employee implements Serializable {
 
     @Column(name = "postal_address")
     @Convert(converter = HashMapConverter.class)
+    //@Type(type = "jsonb")
     private HashMap<String, Object> postalAddress;
-
 
     @Column(name = "tax_relevant_data")
     @Convert(converter = HashMapConverter.class)
+    //@Type(type = "jsonb")
     @Basic(fetch = FetchType.LAZY)
     private HashMap<String, Object> taxRelevantData;
 

@@ -1,13 +1,15 @@
 package com.giraone.pms;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class PmsApplicationTests {
+class PmsApplicationTest {
 
+    @Autowired
     @Test
-    void contextLoads() {
+    void assertThat_onApplicationEvent_works() {
     }
 
 }
