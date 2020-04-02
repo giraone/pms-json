@@ -9,22 +9,28 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class HashMapConverterTest {
+class MapConverterTest {
 
-    private HashMapConverter cut = new HashMapConverter();
+    private MapConverter cut = new MapConverter();
 
-    private HashMap<String,Object> map = new HashMap<>(Map.of(
-        "key-a", "value-a",
-        "key-b", 1,
-        "key-c", Map.of(
-            "key-c.a", "x",
-            "key-c.b", true,
-            "key-c.c", Arrays.asList(
-                Map.of("key-c.c.0", "one"),
-                Map.of("key-c.c.1", "two")
-            )
-        )
-    ));
+    private Map<String,Object> map = new HashMap<>();
+
+    {
+        Map<String,Object> subMapC = new HashMap<>();
+
+        Map<String,Object> subMapC0 = new HashMap<>();
+        Map<String,Object> subMapC1 = new HashMap<>();
+
+        map.put("key-a", "value-a");
+        map.put("key-b", 1);
+        map.put("key-c", subMapC);
+        subMapC.put("key-c.a", "x");
+        subMapC.put("key-c.b", true);
+
+        subMapC0.put("key-c.c.0", "one");
+        subMapC1.put("key-c.c.1", "one");
+        subMapC.put("key-c.c", Arrays.asList(subMapC0, subMapC1));
+    }
 
     @Test
     void convertToDatabaseColumn_success() {
@@ -41,9 +47,9 @@ class HashMapConverterTest {
     @Test
     void convertToDatabaseColumn_failure() {
 
-        HashMap<String, Object> badMap = new HashMap<>();
-        badMap.put("key", "value");
-        badMap.put("key", new Object());
+        Map<String, Object> badMap = new HashMap<>();
+        badMap.put("key1", "value");
+        badMap.put("key2", new Object());
         String result = cut.convertToDatabaseColumn(badMap);
         assertThat(result).isNull();
     }
@@ -55,14 +61,16 @@ class HashMapConverterTest {
         Map<String, Object> result = cut.convertToEntityAttribute(input);
         assertThat(result.get("key-a")).isEqualTo("value-a");
         assertThat(result.get("key-b")).isEqualTo(1);
-        assertThat(result.get("key-c")).isInstanceOf(HashMap.class);
-        HashMap<String,Object> keyc = (HashMap<String,Object>) result.get("key-c");
-        assertThat(keyc.get("key-c.a")).isEqualTo("x");
-        assertThat(keyc.get("key-c.b")).isEqualTo(true);
-        assertThat(keyc.get("key-c.c")).isInstanceOf(List.class);
-        List<HashMap<String,Object>> keycc = (List<HashMap<String,Object>>) keyc.get("key-c.c");
-        assertThat(keycc.get(0).get("key-c.c.0")).isEqualTo("one");
-        assertThat(keycc.get(1).get("key-c.c.1")).isEqualTo("two");
+        assertThat(result.get("key-c")).isInstanceOf(Map.class);
+        @SuppressWarnings("unchecked")
+        Map<String,Object> keyC = (Map<String,Object>) result.get("key-c");
+        assertThat(keyC.get("key-c.a")).isEqualTo("x");
+        assertThat(keyC.get("key-c.b")).isEqualTo(true);
+        assertThat(keyC.get("key-c.c")).isInstanceOf(List.class);
+        @SuppressWarnings("unchecked")
+        List<Map<String,Object>> keyCC = (List<Map<String,Object>>) keyC.get("key-c.c");
+        assertThat(keyCC.get(0).get("key-c.c.0")).isEqualTo("one");
+        assertThat(keyCC.get(1).get("key-c.c.1")).isEqualTo("two");
     }
 
     @Test

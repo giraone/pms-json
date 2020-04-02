@@ -69,7 +69,7 @@ object, which may differ in its content.
 ### Solution 1: Using `HashMap<String, Object>` as data type and an `javax.persistence.AttributeConverter` 
 
 ```java
-import com.giraone.pms.repository.conversion.HashMapConverter;
+import com.giraone.pms.repository.conversion.MapConverter;
 ...
 @Entity
 public class Company implements Serializable {
@@ -80,7 +80,7 @@ public class Company implements Serializable {
     ...
     
     @Column(name = "company_address")
-    @Convert(converter = HashMapConverter.class)
+    @Convert(converter = MapConverter.class)
     private HashMap<String, Object> companyAddress;
 }
 ```

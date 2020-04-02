@@ -2,13 +2,10 @@ package com.giraone.pms.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.giraone.pms.domain.enumeration.GenderType;
-import com.giraone.pms.repository.conversion.HashMapConverter;
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import com.giraone.pms.repository.conversion.MapConverter;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -60,12 +57,12 @@ public class Employee implements Serializable {
     private GenderType gender;
 
     @Column(name = "postal_address")
-    @Convert(converter = HashMapConverter.class)
+    @Convert(converter = MapConverter.class)
     //@Type(type = "jsonb")
     private HashMap<String, Object> postalAddress;
 
     @Column(name = "tax_relevant_data")
-    @Convert(converter = HashMapConverter.class)
+    @Convert(converter = MapConverter.class)
     //@Type(type = "jsonb")
     @Basic(fetch = FetchType.LAZY)
     private HashMap<String, Object> taxRelevantData;

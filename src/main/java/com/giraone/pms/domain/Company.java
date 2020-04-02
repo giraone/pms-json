@@ -1,12 +1,9 @@
 package com.giraone.pms.domain;
 
-import com.giraone.pms.repository.conversion.HashMapConverter;
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import com.giraone.pms.repository.conversion.MapConverter;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -50,7 +47,7 @@ public class Company implements Serializable {
     private String taxRelevantStateCode;
 
     @Column(name = "company_address")
-    @Convert(converter = HashMapConverter.class)
+    @Convert(converter = MapConverter.class)
     //@Type(type = "jsonb")
     private HashMap<String, Object> companyAddress;
 }
